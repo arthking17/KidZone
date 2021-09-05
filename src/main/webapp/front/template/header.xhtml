@@ -1,0 +1,36 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<h:panelGroup>
+		<header id="header">
+			<div class="container">
+				<h:form>
+					<a href="/kidzone/front/index.jsf" id="logo" title="KidZone">KidZone</a>
+					<div class="menu-trigger"></div>
+					<nav id="menu">
+						<ul>
+							<li><a href="events.html">Courses</a></li>
+							<li><a href="gallery.html">Students</a></li>
+							<li><a href="events.html">Events</a></li>
+						</ul>
+						<ul>
+							<li class="#{frontController.login eq null ? '' : 'd-none'}"><a href="#login" class="login-form">Login</a></li>
+							<li>
+								<p:commandLink id="nonAjax" action="#{frontController.doLogout}"
+									style="margin-right:20px;" ajax="false">
+									<h:outputText value="#{frontController.login}" />
+								</p:commandLink>
+							</li>
+							<li class="#{frontController.login eq null ? '' : 'd-none'}"><a title="logout" href="/kidzone/front/pages/register.jsf" class="register-form">Register</a></li>
+							<li><a href="#fancy" class="get-contact">Contact</a></li>
+						</ul>
+					</nav>
+					<!-- / navigation -->
+				</h:form>
+			</div>
+			<!-- / container -->
+
+		</header>
+		<!-- / header -->
+	</h:panelGroup>
+</ui:composition>

@@ -1,0 +1,24 @@
+.admin {
+  background-color: #fa1904 !important;
+  background-image: none !important;
+  color: #ffffff !important;
+}
+.user {
+  background-color: #54a90a !important;
+  background-image: none !important;
+  color: #ffffff !important;
+}
+.staff {
+  background-color: #2808db !important;
+  background-image: none !important;
+  color: #ffffff !important;
+}
+.visitor {
+    background-color: #0a97a9 !important;
+    background-image: none !important;
+    color: #ffffff !important;
+  }
+  .ui-filter-column .ui-column-customfilter .custom-filter {
+    width: 100%;
+    box-sizing: border-box;
+}

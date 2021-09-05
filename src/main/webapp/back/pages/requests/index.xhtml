@@ -1,0 +1,142 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+  template="../../template/template.xhtml" xmlns:p="http://primefaces.org/ui">
+  <ui:param name="page_name" value="Requests" />
+
+  <ui:define name="css">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <link rel="stylesheet" href="../../dist/css/pages/users/style.css" />
+  </ui:define>
+
+  <ui:define name="content">
+    <!-- Content Wrapper. Contains page content -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header">
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+
+            <h:form id="form">
+              <div class="card">
+                <p:growl id="msgs" showDetail="true" skipDetailIfEqualsSummary="true" />
+
+                <p:toolbar>
+                  <p:toolbarGroup>
+                    <p:commandButton id="delete-requests-button" value="#{requestController.deleteButtonMessage}"
+                      icon="pi pi-trash" actionListener="#{requestController.deleteSelectedRequests}"
+                      styleClass="ui-button-danger" disabled="#{!requestController.hasSelectedRequests()}" update="@this">
+                      <p:confirm header="Confirmation" message="Delete the selected requests?"
+                        icon="pi pi-exclamation-triangle" />
+                    </p:commandButton>
+                  </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="requests" var="request" value="#{requestController.requests}" reflow="true"
+                  selection="#{requestController.selectedRequests}" rowKey="#{request.id}" paginator="true" rows="10"
+                  selectionPageOnly="false" allowUnsorting="true" sortMode="single" widgetVar="requestsTable"
+                  emptyMessage="No Request found with given criteria" filteredValue="#{requestController.filteredRequests}"
+                  rowSelectMode="add">
+                  <f:facet name="header">
+                    <div class="row mb-2">
+                      <div class="col-sm-10">
+                        <h3 class="card-title">List of Requests</h3>
+                        <br />
+                        <small class="text-muted">All requests are displayed here.</small>
+                      </div>
+                      <div class="col-sm-2">
+                        <!--<p:inputText id="globalFilter" onkeyup="PF('requestsTable').filter()" style="width:10rem"
+                        placeholder="Enter keyword" />-->
+                        <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify" />
+                        <p:columnToggler datasource="requests" trigger="toggler" />
+                      </div>
+                    </div>
+                  </f:facet>
+
+                  <p:ajax event="rowSelect" update=":form:delete-requests-button" />
+                  <p:ajax event="rowUnselect" update=":form:delete-requests-button" />
+                  <p:ajax event="rowSelectCheckbox" update=":form:delete-requests-button" />
+                  <p:ajax event="rowUnselectCheckbox" update=":form:delete-requests-button" />
+                  <p:ajax event="toggleSelect" update=":form:delete-requests-button" />
+
+                  <p:column selectionMode="multiple" style="width:16px;text-align:center" />
+
+                  <p:column sortBy="#{request.id}" headerText="Id" filterBy="#{request.id}">
+                    <h:outputText value="#{request.id}" />
+                  </p:column>
+
+                  <p:column sortBy="#{request.name}" headerText="Name" filterBy="#{request.name}">
+                    <h:outputText value="#{request.name}" />
+                  </p:column>
+
+                  <p:column sortBy="#{request.email}" headerText="Email" filterBy="#{request.email}">
+                    <h:outputText value="#{request.email}" />
+                  </p:column>
+
+                  <p:column sortBy="#{request.subject}" headerText="Subject" filterBy="#{request.subject}">
+                    <h:outputText value="#{request.subject}"
+                      class="#{request.subject eq 'COMPLAINT' ? 'admin' : request.subject eq 'INFORMATION' ? 'user' : 'staff'}" />
+                  </p:column>
+
+                  <p:column sortBy="#{request.question}" headerText="Question" filterBy="#{request.question}">
+                    <h:outputText value="#{request.question}" />
+                  </p:column>
+
+                  <p:column field="createdDate" sortBy="#{request.createdDate}" headerText="Created Date"
+                    filterMatchMode="range">
+                    <f:facet name="filter">
+                      <p:datePicker selectionMode="range" onchange="PF('requestsTable').filter()" />
+                    </f:facet>
+                  </p:column>
+
+                  <p:column exportable="false">
+                    <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this"
+                      oncomplete="PF('deleteRequestDialog').show()">
+                      <f:setPropertyActionListener value="#{request}" target="#{requestController.selectedRequest}" />
+                    </p:commandButton>
+                  </p:column>
+                </p:dataTable>
+
+                <p:confirmDialog widgetVar="deleteRequestDialog" showEffect="fade" width="300" message="Delete the request?"
+                  header="Confirm" severity="warn">
+                  <p:commandButton value="Yes" icon="pi pi-check" actionListener="#{requestController.deleteSelectedRequest}"
+                    process="@this" oncomplete="PF('deleteRequestDialog').hide()" />
+                  <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                    onclick="PF('deleteRequestDialog').hide()" />
+                </p:confirmDialog>
+
+                <p:confirmDialog global="true" showEffect="fade" width="300">
+                  <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                  <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"
+                    icon="pi pi-times" />
+                </p:confirmDialog>
+              </div>
+            </h:form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </section>
+  </ui:define>
+
+  <ui:define name="js">
+    <!-- jQuery 
+    <script src="../../plugins/jquery/jquery.min.js"></script>-->
+    <!-- Bootstrap 4 -->
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="../../dist/js/demo.js"></script>
+    <!-- Page specific script -->
+  </ui:define>
+</ui:composition>

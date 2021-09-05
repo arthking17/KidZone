@@ -1,8 +1,16 @@
 package tn.kidzone.spring.entity;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.Date;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -112,12 +120,23 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
+	public void setPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		SecureRandom random = new SecureRandom();
+		byte[] salt = new byte[16];
+		random.nextBytes(salt);
+		/*MessageDigest md = MessageDigest.getInstance("SHA-512");
+		md.update(salt);
+		byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));*/
+		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
+		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		byte[] hashedPassword = factory.generateSecret(spec).getEncoded();
+
+		System.out.println(hashedPassword);
+		this.password = String.valueOf(hashedPassword);
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public String getPassword() {
+		return password;
 	}
 
 	public String getProfil() {
@@ -166,5 +185,5 @@ public class User implements Serializable {
 				+ ", password=" + password + ", profil=" + profil + ", address=" + address + ", birthdayDate="
 				+ birthdayDate + ", role=" + role + ", createdDate=" + createdDate + "]";
 	}
-	
+
 }

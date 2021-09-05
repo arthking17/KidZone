@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>#{page_name} | KidZone</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <ui:insert name="css" />
+
+</h:head>
+
+<h:body class="">
+
+    <ui:include src="header.xhtml" />
+
+    <ui:insert name="content" />
+
+    <ui:include src="footer.xhtml" />
+
+    <div id="fancy" class="fancy">
+        <h2>Request information</h2>
+        <h:form id="form">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <fieldset class="mail">
+                        <div class="form-group">
+                            <p:inputText id="email" value="#{requestController.email}" placeholder="Email..."
+                                required="true" requiredMessage="Email Address is required">
+                                <f:validateRegex
+                                    pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"
+                                    patternMessage="Email format is invalid" />
+                            </p:inputText>
+                            <p:message for="email" />
+                        </div>
+                    </fieldset>
+                    <fieldset class="name">
+                        <div class="form-group">
+                            <p:inputText id="name" value="#{requestController.name}" placeholder="Name..."
+                                required="true" requiredMessage="Name is required" />
+                            <p:message for="name" />
+                        </div>
+                    </fieldset>
+                    <fieldset class="subject">
+                        <div class="form-group">
+                            <h:selectOneMenu id="subject" value="#{requestController.subject}" required="true"
+                                requiredMessage="subject is required">
+                                <f:selectItem itemLabel="Choose your subject" itemValue="#{null}" />
+                                <f:selectItems value="#{requestController.subjects}" />
+                            </h:selectOneMenu>
+                            <p:message for="subject" />
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-sm-6">
+                    <fieldset class="question">
+                        <div class="form-group">
+                            <p:inputTextarea id="question" value="#{requestController.question}"
+                                placeholder="Question..." required="true" requiredMessage="Question is required"
+                                rows="6" cols="33" counter="display" maxlength="255"
+                                counterTemplate="{0} characters remaining." />
+                            <h:outputText id="display" class="small" />
+                            <p:message for="question" />
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="btn-holder">
+                <h:commandButton id="btn" class="btn btn-primary" value="Send request" ajax="true"
+                    action="#{requestController.sendRequest()}" validateClient="true" />
+            </div>
+        </h:form>
+    </div>
+
+    <div id="login" class="fancy">
+        <h2>Login</h2>
+        <h:form id="form-login">
+            <div class="center">
+                <fieldset class="mail">
+                    <div class="form-group">
+                        <p:inputText id="email" value="#{frontController.login}" placeholder="Email..." required="true"
+                            requiredMessage="Email Address is required">
+                            <f:validateRegex
+                                pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"
+                                patternMessage="Email format is invalid" />
+                        </p:inputText>
+                        <p:message for="email" />
+                    </div>
+                </fieldset>
+                <fieldset class="password">
+                    <div class="form-group">
+                        <p:password id="password" value="#{frontController.password}" required="true"
+                            requiredMessage="Password is required" placeholder="Password...">
+                            <f:validateRegex
+                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?.])[A-Za-z\d@$!%*?.]{8,}$"
+                                patternMessage="Password format is invalid" />
+                        </p:password>
+                        <p:message for="password" />
+                    </div>
+                </fieldset>
+                <div class="btn-holder">
+                    <h:commandButton id="btn-login" class="btn blue text-center" value="Login" ajax="false"
+                        action="#{frontController.doLogin()}" validateClient="true" />
+                </div>
+            </div>
+        </h:form>
+    </div>
+
+    <ui:insert name="js" />
+</h:body>
+
+</html>

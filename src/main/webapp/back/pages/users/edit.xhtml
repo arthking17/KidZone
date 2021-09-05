@@ -1,0 +1,237 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+    template="../../template/template.xhtml" xmlns:p="http://primefaces.org/ui">
+    <ui:param name="page_name" value="Update User" />
+
+    <ui:define name="css">
+        <!-- Google Font: Source Sans Pro -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" />
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css" />
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    </ui:define>
+
+    <ui:define name="content">
+        <!-- Content Wrapper. Contains page content -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <!-- left column -->
+                    <div class="col-md-12">
+                        <!-- jquery validation -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    Fill the form <small>All fields are required. </small>
+                                </h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <h:form id="add-user">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="id">Id</label>
+                                        <div class="input-group mb-3">
+                                            <p:message for="id" />
+                                            <p:inputText id="id" value="#{userController.id}" class="form-control"
+                                                placeholder="Enter your id" required="true"
+                                                requiredMessage="id is required" disabled="true" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="first_name">First Name</label>
+                                        <div class="input-group mb-3">
+                                            <p:message for="first_name" />
+                                            <p:inputText id="first_name" value="#{userController.firstName}"
+                                                class="form-control" placeholder="Enter First Name" required="true"
+                                                requiredMessage="First Name is required" />
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <span class="fas fa-user"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="last_name">Last Name</label>
+                                        <div class="input-group mb-3">
+                                            <p:message for="last_name" />
+                                            <p:inputText id="last_name" value="#{userController.lastName}"
+                                                class="form-control" placeholder="Enter Last Name" required="true"
+                                                requiredMessage="Last Name is required" />
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <span class="fas fa-user"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email address</label>
+                                        <div class="input-group mb-3">
+                                            <p:inputText id="email" value="#{userController.email}" class="form-control"
+                                                placeholder="Enter email" required="true"
+                                                requiredMessage="Email Address is required">
+                                                <f:validateRegex
+                                                    pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"
+                                                    patternMessage="Email format is invalid" />
+                                            </p:inputText>
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <span class="fas fa-envelope"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p:message for="email" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address">Address</label>
+                                        <div class="input-group mb-3">
+                                            <p:message for="address" />
+                                            <p:inputText id="address" value="#{userController.address}"
+                                                class="form-control" placeholder="Enter your Address" required="true"
+                                                requiredMessage="Address is required" />
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <span class="fas fa-address-card"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="birthdate">BirthDate</label>
+                                        <div class="input-group mb-3">
+                                            <p:message for="birthdate" />
+                                            <p:datePicker id="birthdate" value="#{userController.birthDate}"
+                                                required="true" requiredMessage="BirthDate is required"
+                                                monthNavigator="true" yearNavigator="true" showWeek="true" />
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <span class="far fa-calendar-alt"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="role">Role</label>
+                                        <div class="input-group mb-3">
+                                            <p:message for="role" />
+                                            <h:selectOneMenu id="role" value="#{userController.role}"
+                                                class="form-control" required="true" requiredMessage="Role is required">
+                                                <f:selectItem itemLabel="Choose the role" itemValue="#{null}" />
+                                                <f:selectItems value="#{userController.roles}" />
+                                            </h:selectOneMenu>
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <span class="fa fa-tasks"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <div class="input-group mb-3">
+                                            <p:password id="password" value="#{userController.password}"
+                                                class="form-control" required="false">
+                                                <f:validateRegex
+                                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?.])[A-Za-z\d@$!%*?.]{8,}|()$"
+                                                    patternMessage="Email format is invalid" />
+                                            </p:password>
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <span class="fas fa-lock"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p:message for="password" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fileUpload">Profil</label>
+                                        <div class="input-group mb-3">
+                                            <p:message for="fileUpload" />
+                                            <p:fileUpload id="fileUpload" mode="advanced"
+                                                value="#{userController.fileUpload}" multiple="false" sizeLimit="102400"
+                                                allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                                invalidSizeMessage="Maximum file size allowed is 100 KB"
+                                                invalidFileMessage="only gif | jpg | jpeg | png is allowed"
+                                                listener="#{userController.handleFileUpload}" required="true"
+                                                requiredMessage="Profil is required" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group d-none">
+                                        <label for="creationDate">creationDate</label>
+                                        <div class="input-group mb-3">
+                                            <p:message for="creationDate" />
+                                            <p:inputText id="creationDate" value="#{userController.creationDate}"
+                                                class="form-control" placeholder="Enter your creationDate"
+                                                required="true" requiredMessage="creationDate is required"
+                                                disabled="true" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group d-none">
+                                        <label for="passwordHashed">passwordHashed</label>
+                                        <div class="input-group mb-3">
+                                            <p:message for="passwordHashed" />
+                                            <p:inputText id="passwordHashed" value="#{userController.passwordHashed}"
+                                                class="form-control" placeholder="Enter your passwordHashed"
+                                                required="true" requiredMessage="passwordHashed is required"
+                                                disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                                <div class="card-footer">
+                                    <h:commandButton class="btn btn-primary btn-block" value="Update" ajax="false"
+                                        action="#{userController.updateUser()}" validateClient="true" />
+                                </div>
+                            </h:form>
+                            <!-- form end -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!--/.col (left) -->
+                    <!-- right column -->
+                    <div class="col-md-6"></div>
+                    <!--/.col (right) -->
+                </div>
+                <!-- /.row -->
+            </div>
+        </section>
+
+    </ui:define>
+
+    <ui:define name="js">
+
+        <!-- jQuery 
+        <script src="../../plugins/jquery/jquery.min.js"></script>-->
+        <!-- Bootstrap 4 -->
+        <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- jquery-validation -->
+        <script src="../../plugins/jquery-validation/jquery.validate.min.js"></script>
+        <script src="../../plugins/jquery-validation/additional-methods.min.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../../dist/js/adminlte.min.js"></script>
+        <!-- AdminLTE for demo purposes -->
+        <script src="../../dist/js/demo.js"></script>
+        <!-- Page specific script -->
+
+        <script type="text/javascript">
+            //<![CDATA[
+            function dateTemplateFunc(date) {
+                return '<span style="background-color:' + ((date.day < 21 && date.day > 10) ? '#81C784' : 'inherit') + ';border-radius:50%;width: 2.5rem;height: 2.5rem;line-height: 2.5rem;display: flex;align-items: center;justify-content: center;">' + date.day + '</span>';
+            }
+
+            //]]>
+        </script>
+
+        <style type="text/css">
+            .value {
+                font-weight: bold;
+            }
+        </style>
+    </ui:define>
+</ui:composition>

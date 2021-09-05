@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>KidZoneB | Register</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="back/plugins/fontawesome-free/css/all.min.css" />
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="back/plugins/icheck-bootstrap/icheck-bootstrap.min.css" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="back/dist/css/adminlte.min.css" />
+
+
+</h:head>
+
+<body class="hold-transition register-page">
+    <div class="register-box">
+        <div class="register-logo">
+            <a href="/back/index.jsf"><b>Admin</b>LTE</a>
+        </div>
+
+        <div class="card">
+            <div class="card-body register-card-body">
+                <p class="login-box-msg">Register a new membership</p>
+
+                <h:form>
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <label>First Name</label>
+                            <h:inputText value="#{userController.firstName}" class="form-control" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <label>Last Name</label>
+                            <h:inputText value="#{userController.lastName}" class="form-control" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <label>Email </label>
+                            <h:inputText value="#{userController.email}" class="form-control" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <label>Address </label>
+                            <h:inputText value="#{userController.address}" class="form-control" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-address-card"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <label>BirthDate</label>
+                            <p:datePicker id="birthDate" value="#{userController.birthDate}" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="far fa-calendar-alt"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <label>Role</label>
+                            <h:selectOneMenu value="#{userController.role}" class="form-control">
+                                <f:selectItem itemLabel="Choose the role" itemValue="#{null}" />
+                                <f:selectItems value="#{userController.roles}" />
+                            </h:selectOneMenu>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fa fa-tasks"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <h:inputSecret value="#{userController.password}" class="form-control" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <h:inputSecret value="#{userController.confirmPassword}" class="form-control" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="icheck-primary">
+                                <input type="checkbox" id="agreeTerms" name="terms" value="agree" /> <label for="agreeTerms"> I agree to
+									the <a href="#">terms</a>
+								</label>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-4">
+                            <h:commandButton id="btn" class="btn btn-primary btn-block" value="Sign Up" action="#{userController.doRegister()}" />
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </h:form>
+
+                <div class="social-auth-links text-center">
+                    <p>- OR -</p>
+                    <a href="#" class="btn btn-block btn-primary"> <i class="fab fa-facebook mr-2"></i> Sign up using Facebook
+                    </a>
+                    <a href="#" class="btn btn-block btn-danger"> <i class="fab fa-google-plus mr-2"></i> Sign up using Google+
+                    </a>
+                </div>
+
+                <a href="login.html" class="text-center">I already have a
+					membership</a>
+            </div>
+            <!-- /.form-box -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.register-box -->
+
+    <!-- jQuery -->
+    <script src="back/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="back/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="back/dist/js/adminlte.min.js"></script>
+
+    <script src="chat/chat.js"></script>
+</body>
+
+</html>

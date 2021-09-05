@@ -1,0 +1,202 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+  template="../../template/template.xhtml" xmlns:p="http://primefaces.org/ui">
+  <ui:param name="page_name" value="Users" />
+
+  <ui:define name="css">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <link rel="stylesheet" href="../../dist/css/pages/users/style.css" />
+  </ui:define>
+
+  <ui:define name="content">
+    <!-- Content Wrapper. Contains page content -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header">
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+
+            <h:form id="form">
+              <div class="card">
+                <p:growl id="msgs" showDetail="true" skipDetailIfEqualsSummary="true" />
+
+                <p:toolbar>
+                  <p:toolbarGroup>
+                    <p:commandButton value="New" icon="pi pi-plus" styleClass="ui-button-success"
+                      style="margin-right: .5rem" action="#{userController.showAddUserForm()}">
+                    </p:commandButton>
+                    <p:commandButton id="delete-users-button" value="#{userController.deleteButtonMessage}"
+                      icon="pi pi-trash" actionListener="#{userController.deleteSelectedUsers}"
+                      styleClass="ui-button-danger" disabled="#{!userController.hasSelectedUsers()}" update="@this">
+                      <p:confirm header="Confirmation" message="Delete the selected users?"
+                        icon="pi pi-exclamation-triangle" />
+                    </p:commandButton>
+                  </p:toolbarGroup>
+                  <p:toolbarGroup align="right">
+                    <p:fileUpload mode="simple" skinSimple="true" label="Import" chooseIcon="pi pi-download" />
+                    <p:commandButton value="Export" icon="pi pi-upload" styleClass="ui-button-help" ajax="false">
+                      <p:dataExporter type="pdf" target="dt-users" fileName="users" />
+                    </p:commandButton>
+                  </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="users" var="user" value="#{userController.users}" reflow="true"
+                  selection="#{userController.selectedUsers}" rowKey="#{user.id}" paginator="true" rows="10"
+                  selectionPageOnly="false" allowUnsorting="true" sortMode="single" widgetVar="usersTable"
+                  emptyMessage="No User found with given criteria" filteredValue="#{userController.filteredUsers}"
+                  rowSelectMode="add">
+                  <f:facet name="header">
+                    <div class="row mb-2">
+                      <div class="col-sm-10">
+                        <h3 class="card-title">List of Users</h3>
+                        <br />
+                        <small class="text-muted">All users are displayed here.</small>
+                      </div>
+                      <div class="col-sm-2">
+                        <!--<p:inputText id="globalFilter" onkeyup="PF('usersTable').filter()" style="width:10rem"
+                        placeholder="Enter keyword" />-->
+                        <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify" />
+                        <p:columnToggler datasource="users" trigger="toggler" />
+                      </div>
+                    </div>
+                  </f:facet>
+
+                  <p:ajax event="rowSelect" update=":form:delete-users-button" />
+                  <p:ajax event="rowUnselect" update=":form:delete-users-button" />
+                  <p:ajax event="rowSelectCheckbox" update=":form:delete-users-button" />
+                  <p:ajax event="rowUnselectCheckbox" update=":form:delete-users-button" />
+                  <p:ajax event="toggleSelect" update=":form:delete-users-button" />
+
+                  <p:column selectionMode="multiple" style="width:16px;text-align:center" />
+
+                  <p:column sortBy="#{user.id}" headerText="Id" filterBy="#{user.id}">
+                    <h:outputText value="#{user.id}" />
+                  </p:column>
+
+                  <p:column sortBy="#{user.firstName}" headerText="First Name" filterBy="#{user.firstName}">
+                    <h:outputText value="#{user.firstName}" />
+                  </p:column>
+
+                  <p:column sortBy="#{user.lastName}" headerText="Last Name" filterBy="#{user.lastName}">
+                    <h:outputText value="#{user.lastName}" />
+                  </p:column>
+
+                  <p:column sortBy="#{user.email}" headerText="Email" filterBy="#{user.email}">
+                    <h:outputText value="#{user.email}" />
+                  </p:column>
+
+                  <p:column headerText="Profil">
+                    <img src="../../../images/users/#{user.profil}" class="direct-chat-img" alt="user-image"></img>
+                    <!--<p:graphicImage name="/images/users/#{user.profil}" library="kidzone" />-->
+                  </p:column>
+
+                  <p:column sortBy="#{user.address}" headerText="Address" filterBy="#{user.address}">
+                    <h:outputText value="#{user.address}" />
+                  </p:column>
+
+                  <p:column field="birthdayDate" sortBy="#{user.birthdayDate}" headerText="Birthdate"
+                    filterMatchMode="range">
+                    <f:facet name="filter">
+                      <p:datePicker selectionMode="range" onchange="PF('usersTable').filter()" />
+                    </f:facet>
+                  </p:column>
+
+                  <p:column sortBy="#{user.role}" headerText="Role" filterBy="#{user.role}">
+                    <h:outputText value="#{user.role}"
+                      class="#{user.role eq 'ADMIN' ? 'admin' : user.role eq 'PARENT' ? 'user' : user.role eq 'STUDENT' ? 'user' : user.role eq 'VISITOR' ? 'visitor' : 'staff'}" />
+                  </p:column>
+                  <p:column sortBy="#{user.createdDate}" headerText="Creation Date" filterBy="#{user.createdDate}">
+                    <h:outputText value="#{user.createdDate}" />
+                  </p:column>
+
+                  <p:column exportable="false">
+                    <p:commandButton icon="pi pi-pencil" action="#{userController.editUser(user)}"
+                      styleClass="edit-button rounded-button ui-button-success">
+                    </p:commandButton>
+                    <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this"
+                      oncomplete="PF('deleteUserDialog').show()">
+                      <f:setPropertyActionListener value="#{user}" target="#{userController.selectedUser}" />
+                    </p:commandButton>
+                  </p:column>
+                </p:dataTable>
+
+                <p:dialog header="User Info" widgetVar="userDialog" modal="true" showEffect="fade" hideEffect="fade"
+                  resizable="false" responsive="true">
+                  <p:outputPanel id="userDetail" class="ui-fluid">
+                    <p:outputPanel rendered="#{not empty userController.selectedUser}">
+                      <img src="../../../images/users/#{selectedUser.profil}" class="direct-chat-img"
+                        alt="user-image"></img>
+                      <div class="p-field">
+                        <p:outputLabel for="firstName">First Name</p:outputLabel>
+                        <p:outputLabel id="firstName" value="#{userController.selectedUser.firstName}" />
+                      </div>
+                      <div class="p-field">
+                        <p:outputLabel for="lastName">Last Name</p:outputLabel>
+                        <p:outputLabel id="lastName" value="#{userController.selectedUser.lastName}" />
+                      </div>
+                      <div class="p-field">
+                        <p:outputLabel for="email">Email</p:outputLabel>
+                        <p:outputLabel id="email" value="#{userController.selectedUser.email}" />
+                      </div>
+                      <div class="p-field">
+                        <p:outputLabel for="birthDate">Birthdate</p:outputLabel>
+                        <p:outputLabel id="birthDate" value="#{userController.selectedUser.birthDate}" />
+                      </div>
+                      <div class="p-field">
+                        <p:outputLabel for="creationDate">Creation Date</p:outputLabel>
+                        <p:outputLabel id="creationDate" value="#{userController.selectedUser.creationDate}" />
+                      </div>
+                      <div class="p-field">
+                        <p:outputLabel for="role">Role</p:outputLabel>
+                        <p:outputLabel
+                          class="#{user.role eq 'ADMIN' ? 'admin' : user.role eq 'PARENT' ? 'user' : user.role eq 'STUDENT' ? 'user' : user.role eq 'VISITOR' ? 'visitor' : 'staff'}"
+                          id="role" value="#{userController.selectedUser.role}" />
+                      </div>
+                    </p:outputPanel>
+                  </p:outputPanel>
+                </p:dialog>
+
+                <p:confirmDialog widgetVar="deleteUserDialog" showEffect="fade" width="300" message="Delete the user?"
+                  header="Confirm" severity="warn">
+                  <p:commandButton value="Yes" icon="pi pi-check" actionListener="#{userController.deleteSelectedUser}"
+                    process="@this" oncomplete="PF('deleteUserDialog').hide()" />
+                  <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                    onclick="PF('deleteUserDialog').hide()" />
+                </p:confirmDialog>
+
+                <p:confirmDialog global="true" showEffect="fade" width="300">
+                  <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                  <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"
+                    icon="pi pi-times" />
+                </p:confirmDialog>
+              </div>
+            </h:form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </section>
+  </ui:define>
+
+  <ui:define name="js">
+    <!-- jQuery 
+    <script src="../../plugins/jquery/jquery.min.js"></script>-->
+    <!-- Bootstrap 4 -->
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes 
+    <script src="../../dist/js/demo.js"></script>-->
+    <!-- Page specific script -->
+  </ui:define>
+</ui:composition>
