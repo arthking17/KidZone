@@ -457,7 +457,11 @@ public class UserController {
 		 * .matchMode(MatchMode.EQUALS) .build());
 		 */
 
-		filterBy.add(FilterMeta.builder().field("birthdayDate")
+		filterBy.add(FilterMeta.builder().field("birthDate")
+				.filterValue(Arrays.asList(LocalDate.now().minusDays(28), LocalDate.now().plusDays(28)))
+				.matchMode(MatchMode.RANGE).build());
+
+		filterBy.add(FilterMeta.builder().field("creationDate")
 				.filterValue(Arrays.asList(LocalDate.now().minusDays(28), LocalDate.now().plusDays(28)))
 				.matchMode(MatchMode.RANGE).build());
 	}

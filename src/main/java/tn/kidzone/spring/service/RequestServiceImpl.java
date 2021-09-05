@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import tn.kidzone.spring.entity.Request;
@@ -15,6 +17,9 @@ public class RequestServiceImpl implements IRequestService {
   @Autowired
   RequestRepository requestRepository;
   private static final Logger l = LogManager.getLogger(IRequestService.class);
+
+  @Autowired
+  private JavaMailSender emailSender;
 
   @Override
   public List<Request> getAllRequests() {
@@ -49,6 +54,16 @@ public class RequestServiceImpl implements IRequestService {
   @Override
   public Request getRequestByEmail(String email) {
     return requestRepository.retrieveRequestByEmail(email);
+  }
+
+  @Override
+  public void sendMail(String to, String subject, String text) {
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setFrom("service@KidZone.com");
+    message.setTo(to);
+    message.setSubject(subject);
+    message.setText(text);
+    emailSender.send(message);
   }
 
 }

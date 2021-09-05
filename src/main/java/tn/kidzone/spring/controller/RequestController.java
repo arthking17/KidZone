@@ -28,7 +28,7 @@ import tn.kidzone.spring.service.IRequestService;
 @Scope(value = "session")
 @Controller(value = "requestController")
 @ELBeanName(value = "requestController")
-@Join(path = "/", to = "/front/index.jsf")
+@Join(path = "/back/pages/requests", to = "/back/pages/requests/index.jsf")
 public class RequestController {
 
     @Autowired
@@ -42,6 +42,13 @@ public class RequestController {
     private Subject subject;
     private Subject[] subjects;
     private String email;
+
+    private List<Request> requests;
+
+    private Request selectedRequest;
+    private List<Request> selectedRequests;
+
+    private List<Request> filteredRequests;
 
     public String getId() {
         return id;
@@ -92,7 +99,6 @@ public class RequestController {
     }
 
     public Subject[] getSubjects() {
-        // Enum roles = ['PARENT', 'STUDENT'];
         return Request.Subject.values();
     }
 
@@ -109,7 +115,7 @@ public class RequestController {
     }
 
     public void sendRequest() {
-        Request request = new Request(email, name, question, subject, new Date());
+        Request request = new Request(email, name, question, subject, new Date(), 0);
         rs.addRequest(request);
         FacesMessage facesMessage = new FacesMessage("Request Sent with success.");
         FacesContext.getCurrentInstance().addMessage("form:btn", facesMessage);
@@ -119,15 +125,10 @@ public class RequestController {
         subject = null;
     }
 
-    private List<Request> requests;
-
     public List<Request> getRequests() {
         requests = rs.getAllRequests();
         return requests;
     }
-
-    private Request selectedRequest;
-    private List<Request> selectedRequests;
 
     public Request getSelectedRequest() {
         return selectedRequest;
@@ -176,6 +177,14 @@ public class RequestController {
         PrimeFaces.current().executeScript("PF('requestsTable').clearFilters()");
     }
 
+    public List<Request> getFilteredRequests() {
+        return filteredRequests;
+    }
+
+    public void setFilteredRequests(List<Request> filteredRequests) {
+        this.filteredRequests = filteredRequests;
+    }
+
     private List<FilterMeta> filterBy;
 
     @PostConstruct
@@ -189,7 +198,7 @@ public class RequestController {
          * .filterValue(RequestStatus.NEW) .matchMode(MatchMode.EQUALS) .build());
          */
 
-        filterBy.add(FilterMeta.builder().field("birthdayDate")
+        filterBy.add(FilterMeta.builder().field("createdDate")
                 .filterValue(Arrays.asList(LocalDate.now().minusDays(28), LocalDate.now().plusDays(28)))
                 .matchMode(MatchMode.RANGE).build());
     }
@@ -209,13 +218,32 @@ public class RequestController {
                 || request.getSubject().name().toLowerCase().contains(filterText);
     }
 
-    private List<Request> filteredRequests;
-
-    public List<Request> getFilteredRequests() {
-        return filteredRequests;
-    }
-
-    public void setFilteredRequests(List<Request> filteredRequests) {
-        this.filteredRequests = filteredRequests;
+    public String validateRequest(Request request, int state) {
+        String navigateTo = "/back/requests/index.xhtml?faces-redirect=true";
+        System.out.println(" ddddddddddddddddddd " + state + " state " + request);
+        request.setState(state);
+        request.setValidateDate(new Date());
+        rs.updateRequest(request);
+        this.selectedRequest = null;
+        if (state == 1) {
+            //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Request Confirm"));
+            String to = request.getEmail();
+            String subject = "Request Confirm | KidZone";
+            String text = "Your recent request has been confirmed. We'll see what we can do. Have a nice day!";
+            rs.sendMail(to, subject, text);
+        } else if (state == 2) {
+            String to = request.getEmail();
+            String subject = "Request Confirm | KidZone";
+            String text = "Your recent request has been rejected. we can't do anything for you. Have a nice day!";
+            rs.sendMail(to, subject, text);
+            //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Request Reject"));
+        }
+        this.requests.forEach(req -> {
+            if (req.getId().equals(request.getId())) {
+                req.setState(state);
+            }
+        });
+        //PrimeFaces.current().ajax().update("form:messages", "form:requests");
+        return navigateTo;
     }
 }

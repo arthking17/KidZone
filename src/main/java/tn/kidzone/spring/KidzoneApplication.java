@@ -1,6 +1,7 @@
 package tn.kidzone.spring;
 
 import java.util.EnumSet;
+import java.util.Properties;
 
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.DispatcherType;
@@ -13,6 +14,8 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.WebApplicationInitializer;
 
 import javax.servlet.FilterRegistration;
@@ -60,5 +63,22 @@ public class KidzoneApplication {
 		registration.addUrlPatterns("/pages/*");
 		return registration;
 	}
+/*
+	@Bean
+	public JavaMailSender getJavaMailSender() {
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("smtp.gmail.com");
+		mailSender.setPort(587);
 
+		mailSender.setUsername("4lph4k1n@gmail.com");
+		mailSender.setPassword("Arthking.17");
+
+		Properties props = mailSender.getJavaMailProperties();
+		props.put("mail.transport.protocol", "smtp");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.debug", "true");
+
+		return mailSender;
+	}*/
 }

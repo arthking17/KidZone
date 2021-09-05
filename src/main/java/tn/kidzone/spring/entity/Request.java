@@ -33,6 +33,11 @@ public class Request implements Serializable {
 	@Column
 	@Temporal(TemporalType.DATE)
 	private Date createdDate;
+	@Column
+	private int state = 0;
+	@Column
+	@Temporal(TemporalType.DATE)
+	private Date validateDate;
 
 	public enum Subject {
 		INFORMATION, COMPLAINT
@@ -42,16 +47,17 @@ public class Request implements Serializable {
 		super();
     }
 
-    public Request(String email, String name, String question, Subject subject, Date createdDate) {
+    public Request(String email, String name, String question, Subject subject, Date createdDate, int state) {
 		super();
         this.email = email;
         this.name = name;
         this.question = question;
         this.subject = subject;
         this.createdDate = createdDate;
+        this.state = state;
     }
 
-    public Request(String id, String email, String name, String question, Subject subject, Date createdDate) {
+    public Request(String id, String email, String name, String question, Subject subject, Date createdDate, int state) {
 		super();
         this.id = id;
         this.email = email;
@@ -59,6 +65,7 @@ public class Request implements Serializable {
         this.question = question;
         this.subject = subject;
         this.createdDate = createdDate;
+        this.state = state;
     }
 
     public String getId() {
@@ -108,6 +115,22 @@ public class Request implements Serializable {
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public Date getValidateDate() {
+        return validateDate;
+    }
+
+    public void setValidateDate(Date validateDate) {
+        this.validateDate = validateDate;
+    }
 
     @Override
     public String toString() {

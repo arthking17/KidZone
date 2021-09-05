@@ -7,10 +7,10 @@
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" />
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css" />
+    <link rel="stylesheet" href="/kidzone/back/plugins/fontawesome-free/css/all.min.css" />
     <!-- Theme style -->
-    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
-    <link rel="stylesheet" href="../../dist/css/pages/users/style.css" />
+    <link rel="stylesheet" href="/kidzone/back/dist/css/adminlte.min.css" />
+    <link rel="stylesheet" href="/kidzone/back/dist/css/pages/users/style.css" />
   </ui:define>
 
   <ui:define name="content">
@@ -33,18 +33,19 @@
                   <p:toolbarGroup>
                     <p:commandButton id="delete-requests-button" value="#{requestController.deleteButtonMessage}"
                       icon="pi pi-trash" actionListener="#{requestController.deleteSelectedRequests}"
-                      styleClass="ui-button-danger" disabled="#{!requestController.hasSelectedRequests()}" update="@this">
+                      styleClass="ui-button-danger" disabled="#{!requestController.hasSelectedRequests()}"
+                      update="@this">
                       <p:confirm header="Confirmation" message="Delete the selected requests?"
                         icon="pi pi-exclamation-triangle" />
                     </p:commandButton>
                   </p:toolbarGroup>
                 </p:toolbar>
 
-                <p:dataTable id="requests" var="request" value="#{requestController.requests}" reflow="true"
-                  selection="#{requestController.selectedRequests}" rowKey="#{request.id}" paginator="true" rows="10"
+                <p:dataTable id="requests" var="req" value="#{requestController.requests}" reflow="true"
+                  selection="#{requestController.selectedRequests}" rowKey="#{req.id}" paginator="true" rows="10"
                   selectionPageOnly="false" allowUnsorting="true" sortMode="single" widgetVar="requestsTable"
-                  emptyMessage="No Request found with given criteria" filteredValue="#{requestController.filteredRequests}"
-                  rowSelectMode="add">
+                  emptyMessage="No Request found with given criteria"
+                  filteredValue="#{requestController.filteredRequests}" rowSelectMode="add">
                   <f:facet name="header">
                     <div class="row mb-2">
                       <div class="col-sm-10">
@@ -69,46 +70,58 @@
 
                   <p:column selectionMode="multiple" style="width:16px;text-align:center" />
 
-                  <p:column sortBy="#{request.id}" headerText="Id" filterBy="#{request.id}">
-                    <h:outputText value="#{request.id}" />
+                  <p:column sortBy="#{req.id}" headerText="Id" filterBy="#{req.id}">
+                    <h:outputText value="#{req.id}" />
                   </p:column>
 
-                  <p:column sortBy="#{request.name}" headerText="Name" filterBy="#{request.name}">
-                    <h:outputText value="#{request.name}" />
+                  <p:column sortBy="#{req.name}" headerText="Name" filterBy="#{req.name}">
+                    <h:outputText value="#{req.name}" />
                   </p:column>
 
-                  <p:column sortBy="#{request.email}" headerText="Email" filterBy="#{request.email}">
-                    <h:outputText value="#{request.email}" />
+                  <p:column sortBy="#{req.email}" headerText="Email" filterBy="#{req.email}">
+                    <h:outputText value="#{req.email}" />
                   </p:column>
 
-                  <p:column sortBy="#{request.subject}" headerText="Subject" filterBy="#{request.subject}">
-                    <h:outputText value="#{request.subject}"
-                      class="#{request.subject eq 'COMPLAINT' ? 'admin' : request.subject eq 'INFORMATION' ? 'user' : 'staff'}" />
+                  <p:column sortBy="#{req.subject}" headerText="Subject" filterBy="#{req.subject}">
+                    <h:outputText value="#{req.subject}"
+                      class="#{req.subject eq 'COMPLAINT' ? 'admin' : req.subject eq 'INFORMATION' ? 'user' : 'staff'}" />
                   </p:column>
 
-                  <p:column sortBy="#{request.question}" headerText="Question" filterBy="#{request.question}">
-                    <h:outputText value="#{request.question}" />
+                  <p:column sortBy="#{req.question}" headerText="Question" filterBy="#{req.question}">
+                    <h:outputText value="#{req.question}" />
                   </p:column>
 
-                  <p:column field="createdDate" sortBy="#{request.createdDate}" headerText="Created Date"
+                  <p:column field="createdDate" sortBy="#{req.createdDate}" headerText="Created Date"
                     filterMatchMode="range">
                     <f:facet name="filter">
                       <p:datePicker selectionMode="range" onchange="PF('requestsTable').filter()" />
                     </f:facet>
                   </p:column>
 
+                  <p:column sortBy="#{req.state}" headerText="State" filterBy="#{req.state}">
+                    <h:outputText value="#{req.state eq 0 ? 'En attente' : req.state eq 1 ? 'accept' : 'reject'}"
+                      styleClass="#{req.state eq 0 ? 'ui-messages-warn' : req.state eq 1 ? 'ui-messages-info' : 'ui-messages-error'}" />
+                  </p:column>
+
                   <p:column exportable="false">
+                    <p:commandButton icon="pi pi-check" action="#{requestController.validateRequest(req, 1)}"
+                      styleClass="edit-button rounded-button ui-button-success #{req.state eq 0 ? '' : 'd-none'}">
+                    </p:commandButton>
+                    <p:commandButton icon="pi pi-times" action="#{requestController.validateRequest(req, 2)}"
+                      styleClass="edit-button rounded-button ui-button-danger #{req.state eq 0 ? '' : 'd-none'}">
+                    </p:commandButton>
                     <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this"
                       oncomplete="PF('deleteRequestDialog').show()">
-                      <f:setPropertyActionListener value="#{request}" target="#{requestController.selectedRequest}" />
+                      <f:setPropertyActionListener value="#{req}" target="#{requestController.selectedRequest}" />
                     </p:commandButton>
                   </p:column>
                 </p:dataTable>
 
-                <p:confirmDialog widgetVar="deleteRequestDialog" showEffect="fade" width="300" message="Delete the request?"
-                  header="Confirm" severity="warn">
-                  <p:commandButton value="Yes" icon="pi pi-check" actionListener="#{requestController.deleteSelectedRequest}"
-                    process="@this" oncomplete="PF('deleteRequestDialog').hide()" />
+                <p:confirmDialog widgetVar="deleteRequestDialog" showEffect="fade" width="300"
+                  message="Delete the request?" header="Confirm" severity="warn">
+                  <p:commandButton value="Yes" icon="pi pi-check"
+                    actionListener="#{requestController.deleteSelectedRequest}" process="@this"
+                    oncomplete="PF('deleteRequestDialog').hide()" />
                   <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
                     onclick="PF('deleteRequestDialog').hide()" />
                 </p:confirmDialog>
@@ -130,13 +143,13 @@
 
   <ui:define name="js">
     <!-- jQuery 
-    <script src="../../plugins/jquery/jquery.min.js"></script>-->
+    <script src="/kidzone/back/plugins/jquery/jquery.min.js"></script>-->
     <!-- Bootstrap 4 -->
-    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/kidzone/back/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="../../dist/js/adminlte.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="../../dist/js/demo.js"></script>
+    <script src="/kidzone/back/dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes 
+    <script src="/kidzone/back/dist/js/demo.js"></script>-->
     <!-- Page specific script -->
   </ui:define>
 </ui:composition>

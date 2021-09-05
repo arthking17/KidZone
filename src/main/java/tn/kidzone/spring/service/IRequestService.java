@@ -11,4 +11,5 @@ public interface IRequestService {
 	public Request updateRequest(Request r);
 	public Request getRequest(String id);
 	public Request getRequestByEmail(String email);
+	public void sendMail(String to, String subject, String text);
 }
