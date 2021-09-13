@@ -3,6 +3,7 @@ package tn.kidzone.spring.service;
 import java.util.List;
 
 import tn.kidzone.spring.entity.Request;
+import tn.kidzone.spring.entity.Request.Subject;
 
 public interface IRequestService {
 	public List<Request> getAllRequests();
@@ -12,4 +13,7 @@ public interface IRequestService {
 	public Request getRequest(String id);
 	public Request getRequestByEmail(String email);
 	public void sendMail(String to, String subject, String text);
+	public int NumberOfRequests();
+	public int NumberOfRecentRequests();
+	public int Numberof(Subject subject);
 }

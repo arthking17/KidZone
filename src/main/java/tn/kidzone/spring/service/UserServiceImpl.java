@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.kidzone.spring.entity.User;
+import tn.kidzone.spring.entity.User.Role;
 import tn.kidzone.spring.repository.UserRepository;
 
 @Service
@@ -54,6 +55,31 @@ public class UserServiceImpl implements IUserService{
 	@Override
 	public User authenticate(String email, String password) {
 		return userRepository.getUserByEmailAndPassword(email, password);
+	}
+
+	@Override
+	public int NumberOfUsers() {
+		return userRepository.NumberOfUsers();
+	}
+
+	@Override
+	public int NumberOfVisitors() {
+		return userRepository.NumberOfVisitors();
+	}
+
+	@Override
+	public int NumberOfRecentUsers() {
+		return userRepository.NumberOfRecentUsers();
+	}
+
+	@Override
+	public int NumberOfRecentVisitors() {
+		return userRepository.NumberOfRecentVisitors();
+	}
+
+	@Override
+	public int Numberof(Role role) {
+		return userRepository.NumberOf(role);
 	}
 
 }

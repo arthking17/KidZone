@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -24,8 +25,19 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.MatchMode;
-import org.primefaces.model.SortMeta;
-import org.primefaces.model.SortOrder;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.axes.cartesian.CartesianScales;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearTicks;
+import org.primefaces.model.charts.bar.BarChartDataSet;
+import org.primefaces.model.charts.bar.BarChartModel;
+import org.primefaces.model.charts.bar.BarChartOptions;
+import org.primefaces.model.charts.donut.DonutChartDataSet;
+import org.primefaces.model.charts.donut.DonutChartModel;
+import org.primefaces.model.charts.optionconfig.animation.Animation;
+import org.primefaces.model.charts.optionconfig.legend.Legend;
+import org.primefaces.model.charts.optionconfig.legend.LegendLabel;
+import org.primefaces.model.charts.optionconfig.title.Title;
 import org.primefaces.model.file.UploadedFile;
 import org.primefaces.util.LangUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +45,22 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import tn.kidzone.spring.entity.User;
+import tn.kidzone.spring.entity.Request.Subject;
 import tn.kidzone.spring.entity.User.Role;
+import tn.kidzone.spring.service.IRequestService;
 import tn.kidzone.spring.service.IUserService;
 
 @Scope(value = "session")
 @Controller(value = "userController")
 @ELBeanName(value = "userController")
-@Join(path = "/back", to = "/back/index.jsf")
+@Join(path = "/back/index.jsf", to = "/back/index.jsf")
 public class UserController {
 
 	@Autowired
 	IUserService us;
+
+	@Autowired
+	IRequestService rs;
 
 	private String login;
 	private String password;
@@ -197,8 +214,8 @@ public class UserController {
 		return filteredUsers;
 	}
 
-	public void setFilteredUsers1(List<User> filteredUsers1) {
-		this.filteredUsers = filteredUsers1;
+	public void setFilteredUsers1(List<User> filteredUsers) {
+		this.filteredUsers = filteredUsers;
 	}
 
 	private String profilConnected;
@@ -222,7 +239,7 @@ public class UserController {
 			loggedIn = true;
 			authenticatedUser = user;
 		} else {
-			FacesMessage facesMessage = new FacesMessage(
+			FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed",
 					"Login Failed: please check your username/password and try again.");
 			FacesContext.getCurrentInstance().addMessage("form:btn", facesMessage);
 		}
@@ -273,9 +290,8 @@ public class UserController {
 	}
 
 	public String addUser() throws IOException {
-		// if (authenticatedUser == null || !loggedIn || authenticatedUser.getRole() !=
-		// Role.ADMIN)
-		// return "/login.xhtml";
+		if (authenticatedUser == null || !loggedIn || authenticatedUser.getRole() != Role.ADMIN)
+			return "/login.xhtml";
 		System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" + fileUpload);
 		String navigateTo = "/back/pages/users/add.xhtml";
 		User u = new User(firstName, lastName, email, password, "user-1.jpg", address, birthDate, role, new Date());
@@ -345,9 +361,8 @@ public class UserController {
 	}
 
 	public String updateUser() throws NoSuchAlgorithmException, InvalidKeySpecException {
-		// if (authenticatedUser == null || !loggedIn || authenticatedUser.getRole() !=
-		// Role.ADMIN)
-		// return "/login.xhtml";
+		if (authenticatedUser == null || !loggedIn || authenticatedUser.getRole() != Role.ADMIN)
+			return "/login.xhtml";
 		String navigateTo = "/back/pages/users/edit.xhtml";
 		User u = new User();
 		if (password.equals("")) {
@@ -457,13 +472,16 @@ public class UserController {
 		 * .matchMode(MatchMode.EQUALS) .build());
 		 */
 
-		filterBy.add(FilterMeta.builder().field("birthDate")
+		filterBy.add(FilterMeta.builder().field("birthdayDate")
 				.filterValue(Arrays.asList(LocalDate.now().minusDays(28), LocalDate.now().plusDays(28)))
 				.matchMode(MatchMode.RANGE).build());
 
 		filterBy.add(FilterMeta.builder().field("creationDate")
 				.filterValue(Arrays.asList(LocalDate.now().minusDays(28), LocalDate.now().plusDays(28)))
 				.matchMode(MatchMode.RANGE).build());
+
+		createUserStats();
+		createRequestStats();
 	}
 
 	public boolean globalFilterFunction(Object value, Object filter, Locale locale) {
@@ -473,13 +491,167 @@ public class UserController {
 		}
 
 		User user = (User) value;
-		return user.getFirstName().toLowerCase().contains(filterText)
+		return user.getId().toLowerCase().contains(filterText) || user.getFirstName().toLowerCase().contains(filterText)
 				|| user.getLastName().toLowerCase().contains(filterText)
+				|| user.getEmail().toLowerCase().contains(filterText)
 				|| user.getAddress().toLowerCase().contains(filterText)
-				|| user.getEmail().toLowerCase().contains(filterText) || user.getId().toLowerCase().contains(filterText)
 				|| user.getBirthdayDate().toString().toLowerCase().contains(filterText)
-				|| user.getCreatedDate().toString().toLowerCase().contains(filterText)
-				|| user.getRole().name().toLowerCase().contains(filterText);
+				|| user.getRole().name().toLowerCase().contains(filterText)
+				|| user.getCreatedDate().toString().toLowerCase().contains(filterText);
 	}
 
+	private int newRequests;
+	private int newUsers;
+	private int newVisitors;
+	private int numberOfUsers;
+
+	public int getNewRequests() {
+		return rs.NumberOfRecentRequests();
+	}
+
+	public int getNewUsers() {
+		return us.NumberOfRecentUsers();
+	}
+
+	public int getNewVisitors() {
+		return us.NumberOfRecentVisitors();
+	}
+
+	public int getNumberOfUsers() {
+		return us.NumberOfUsers();
+	}
+
+	public void setFilteredUsers(List<User> filteredUsers) {
+		this.filteredUsers = filteredUsers;
+	}
+
+	private BarChartModel userStats;
+
+	public BarChartModel getUserStats() {
+		return userStats;
+	}
+
+	public void setUserStats(BarChartModel userStats) {
+		this.userStats = userStats;
+	}
+
+	public void createUserStats() {
+		userStats = new BarChartModel();
+		ChartData data = new ChartData();
+
+		BarChartDataSet dataSet = new BarChartDataSet();
+        dataSet.setLabel("User Statistics");
+
+		List<Number> values = new ArrayList<>();
+		values.add(us.Numberof(role.ADMIN));
+		values.add(us.Numberof(role.PARENT));
+		values.add(us.Numberof(role.VISITOR));
+		values.add(us.Numberof(role.DIRECTOR));
+		values.add(us.Numberof(role.STUDENT));
+		values.add(us.Numberof(role.DOCTOR));
+		values.add(us.Numberof(role.TEACHER));
+		values.add(us.Numberof(role.DRIVER));
+		dataSet.setData(values);
+
+		List<String> bgColors = new ArrayList<>();
+		bgColors.add("rgb(255, 99, 132)");
+		bgColors.add("rgb(54, 162, 235)");
+		bgColors.add("rgb(255, 205, 86)");
+		bgColors.add("rgb(100, 36, 44)");
+		bgColors.add("rgb(190, 197, 170)");
+		bgColors.add("rgb(84, 165, 147)");
+		bgColors.add("rgb(47, 44, 76)");
+		bgColors.add("rgb(160,81,149)");
+		dataSet.setBackgroundColor(bgColors);
+
+		data.addChartDataSet(dataSet);
+		List<String> labels = new ArrayList<>();
+		labels.add("ADMIN");
+		labels.add("PARENT");
+		labels.add("VISITOR");
+		labels.add("DIRECTOR");
+		labels.add("STUDENT");
+		labels.add("DOCTOR");
+		labels.add("TEACHER");
+		labels.add("DRIVER");
+		data.setLabels(labels);
+
+		userStats.setData(data);
+		//Options
+        BarChartOptions options = new BarChartOptions();
+        CartesianScales cScales = new CartesianScales();
+        CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+        linearAxes.setOffset(true);
+        CartesianLinearTicks ticks = new CartesianLinearTicks();
+        ticks.setBeginAtZero(true);
+        linearAxes.setTicks(ticks);
+        cScales.addYAxesData(linearAxes);
+        options.setScales(cScales);
+
+        Title title = new Title();
+        title.setDisplay(true);
+        title.setText("Number of Users By Role");
+        options.setTitle(title);
+
+        Legend legend = new Legend();
+        legend.setDisplay(true);
+        legend.setPosition("top");
+        LegendLabel legendLabels = new LegendLabel();
+        legendLabels.setFontStyle("bold");
+        legendLabels.setFontColor("#2980B9");
+        legendLabels.setFontSize(24);
+        legend.setLabels(legendLabels);
+        options.setLegend(legend);
+
+        // disable animation
+        Animation animation = new Animation();
+        animation.setDuration(0);
+        options.setAnimation(animation);
+
+        userStats.setOptions(options);
+	}
+
+	private DonutChartModel requestStats;
+
+	public DonutChartModel getRequestStats() {
+		return requestStats;
+	}
+
+	public void setRequestStats(DonutChartModel requestStats) {
+		this.requestStats = requestStats;
+	}
+
+	public void createRequestStats() {
+		requestStats = new DonutChartModel();
+		ChartData data = new ChartData();
+
+		DonutChartDataSet dataSet = new DonutChartDataSet();
+
+		List<Number> values = new ArrayList<>();
+		values.add(rs.Numberof(subject.INFORMATION));
+		values.add(rs.Numberof(subject.COMPLAINT));
+		dataSet.setData(values);
+
+		List<String> bgColors = new ArrayList<>();
+		bgColors.add("rgb(54, 162, 235)");
+		bgColors.add("rgb(255, 99, 132)");
+		dataSet.setBackgroundColor(bgColors);
+
+		data.addChartDataSet(dataSet);
+		List<String> labels = new ArrayList<>();
+		labels.add("INFORMATION");
+		labels.add("COMPLAINT");
+		data.setLabels(labels);
+
+		requestStats.setData(data);
+	}
+    private Subject subject;
+
+	public Subject getSubject() {
+		return subject;
+	}
+
+	public void setSubject(Subject subject) {
+		this.subject = subject;
+	}
 }

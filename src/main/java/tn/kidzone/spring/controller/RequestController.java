@@ -119,6 +119,9 @@ public class RequestController {
         rs.addRequest(request);
         FacesMessage facesMessage = new FacesMessage("Request Sent with success.");
         FacesContext.getCurrentInstance().addMessage("form:btn", facesMessage);
+        // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Form
+        // validation failed"));
+        PrimeFaces.current().ajax().update("form:messages");
         email = null;
         name = null;
         question = null;
@@ -201,6 +204,10 @@ public class RequestController {
         filterBy.add(FilterMeta.builder().field("createdDate")
                 .filterValue(Arrays.asList(LocalDate.now().minusDays(28), LocalDate.now().plusDays(28)))
                 .matchMode(MatchMode.RANGE).build());
+
+        filterBy.add(FilterMeta.builder().field("validateDate")
+                .filterValue(Arrays.asList(LocalDate.now().minusDays(28), LocalDate.now().plusDays(28)))
+                .matchMode(MatchMode.RANGE).build());
     }
 
     public boolean globalFilterFunction(Object value, Object filter, Locale locale) {
@@ -218,32 +225,89 @@ public class RequestController {
                 || request.getSubject().name().toLowerCase().contains(filterText);
     }
 
-    public String validateRequest(Request request, int state) {
-        String navigateTo = "/back/requests/index.xhtml?faces-redirect=true";
+    public void validateRequest(Request request, int state) {
+        String navigateTo = "/back/pages/requests/index.xhtml?faces-redirect=true";
         System.out.println(" ddddddddddddddddddd " + state + " state " + request);
         request.setState(state);
         request.setValidateDate(new Date());
         rs.updateRequest(request);
         this.selectedRequest = null;
         if (state == 1) {
-            //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Request Confirm"));
             String to = request.getEmail();
             String subject = "Request Confirm | KidZone";
             String text = "Your recent request has been confirmed. We'll see what we can do. Have a nice day!";
             rs.sendMail(to, subject, text);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Request Confirm"));
         } else if (state == 2) {
             String to = request.getEmail();
             String subject = "Request Confirm | KidZone";
             String text = "Your recent request has been rejected. we can't do anything for you. Have a nice day!";
             rs.sendMail(to, subject, text);
-            //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Request Reject"));
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Success", "Request Reject"));
         }
+
         this.requests.forEach(req -> {
             if (req.getId().equals(request.getId())) {
                 req.setState(state);
             }
         });
-        //PrimeFaces.current().ajax().update("form:messages", "form:requests");
+
+        PrimeFaces.current().ajax().update("form:messages", "form:requestsTable", "form:requests");
+        System.out.println("\nrequest validate ");
+        // return "/back/pages/requests/index.xhtml";
+    }
+
+    private String mailTo;
+    private String mailContent;
+    private String mailSubject;
+
+    public String getMailTo() {
+        return mailTo;
+    }
+
+    public void setMailTo(String mailTo) {
+        this.mailTo = mailTo;
+    }
+
+    public String getMailContent() {
+        return mailContent;
+    }
+
+    public void setMailContent(String mailContent) {
+        this.mailContent = mailContent;
+    }
+
+    public String getMailSubject() {
+        return mailSubject;
+    }
+
+    public void setMailSubject(String mailSubject) {
+        this.mailSubject = mailSubject;
+    }
+
+    public String showSendMailForm(Request req) 
+    {
+        String navigateTo = "/back/pages/requests/mail.xhtml?faces-redirect=true";
+        mailTo = req.getEmail();
         return navigateTo;
+    }
+
+    public String respondRequest() {
+        String navigateTo = "/back/pages/requests/index.xhtml?faces-redirect=true";
+        String to = mailTo;
+        String subject = mailSubject;
+        String text = mailContent;
+        rs.sendMail(to, subject, text);
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Mail Sent"));
+        return navigateTo;
+    }
+
+    public void resetFormMail() {
+        mailTo = null;
+        mailContent = null;
+        mailSubject = null;
+        PrimeFaces.current().ajax().update("form:form-mail");
     }
 }

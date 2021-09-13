@@ -27,7 +27,7 @@
 
             <h:form id="form">
               <div class="card">
-                <p:growl id="msgs" showDetail="true" skipDetailIfEqualsSummary="true" />
+                <p:growl id="messages" showDetail="true" />
 
                 <p:toolbar>
                   <p:toolbarGroup>
@@ -48,14 +48,14 @@
                   filteredValue="#{requestController.filteredRequests}" rowSelectMode="add">
                   <f:facet name="header">
                     <div class="row mb-2">
-                      <div class="col-sm-10">
+                      <div class="col-sm-9">
                         <h3 class="card-title">List of Requests</h3>
                         <br />
                         <small class="text-muted">All requests are displayed here.</small>
                       </div>
-                      <div class="col-sm-2">
-                        <!--<p:inputText id="globalFilter" onkeyup="PF('requestsTable').filter()" style="width:10rem"
-                        placeholder="Enter keyword" />-->
+                      <div class="col-sm-3">
+                        <p:inputText id="globalFilter" onkeyup="PF('requestsTable').filter()" style="width:10rem"
+                          placeholder="Enter keyword" />
                         <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify" />
                         <p:columnToggler datasource="requests" trigger="toggler" />
                       </div>
@@ -82,25 +82,46 @@
                     <h:outputText value="#{req.email}" />
                   </p:column>
 
-                  <p:column sortBy="#{req.subject}" headerText="Subject" filterBy="#{req.subject}">
-                    <h:outputText value="#{req.subject}"
-                      class="#{req.subject eq 'COMPLAINT' ? 'admin' : req.subject eq 'INFORMATION' ? 'user' : 'staff'}" />
+                  <p:column field="subject" headerText="Subject" filterMatchMode="exact">
+                    <f:facet name="filter">
+                      <p:selectOneMenu onchange="PF('requestsTable').filter()" styleClass="custom-filter">
+                        <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
+                        <f:selectItems value="#{requestController.subjects}" />
+                      </p:selectOneMenu>
+                    </f:facet>
+
+                    <span
+                      class="#{req.subject eq 'COMPLAINT' ? 'admin' : req.subject eq 'INFORMATION' ? 'user' : 'staff'}">#{req.subject}</span>
                   </p:column>
 
                   <p:column sortBy="#{req.question}" headerText="Question" filterBy="#{req.question}">
                     <h:outputText value="#{req.question}" />
                   </p:column>
 
-                  <p:column field="createdDate" sortBy="#{req.createdDate}" headerText="Created Date"
-                    filterMatchMode="range">
+                  <p:column field="createdDate" headerText="Created Date" filterMatchMode="range">
                     <f:facet name="filter">
                       <p:datePicker selectionMode="range" onchange="PF('requestsTable').filter()" />
                     </f:facet>
                   </p:column>
 
-                  <p:column sortBy="#{req.state}" headerText="State" filterBy="#{req.state}">
-                    <h:outputText value="#{req.state eq 0 ? 'En attente' : req.state eq 1 ? 'accept' : 'reject'}"
-                      styleClass="#{req.state eq 0 ? 'ui-messages-warn' : req.state eq 1 ? 'ui-messages-info' : 'ui-messages-error'}" />
+                  <p:column field="validateDate" headerText="Validate Date" filterMatchMode="range">
+                    <f:facet name="filter">
+                      <p:datePicker selectionMode="range" onchange="PF('requestsTable').filter()" />
+                    </f:facet>
+                  </p:column>
+
+                  <p:column field="state" headerText="State" filterMatchMode="exact">
+                    <f:facet name="filter">
+                      <p:selectOneMenu onchange="PF('requestsTable').filter()" styleClass="custom-filter">
+                        <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
+                        <f:selectItem itemLabel="accept" itemValue="1"/>
+                        <f:selectItem itemLabel="reject" itemValue="2" />
+                        <f:selectItem itemLabel="waiting" itemValue="0" />
+                      </p:selectOneMenu>
+                    </f:facet>
+
+                    <span
+                      class="#{req.state eq 0 ? 'ui-messages-warn' : req.state eq 1 ? 'ui-messages-info' : 'ui-messages-error'}">#{req.state eq 0 ? 'waiting' : req.state eq 1 ? 'accept' : 'reject'}</span>
                   </p:column>
 
                   <p:column exportable="false">
@@ -109,6 +130,9 @@
                     </p:commandButton>
                     <p:commandButton icon="pi pi-times" action="#{requestController.validateRequest(req, 2)}"
                       styleClass="edit-button rounded-button ui-button-danger #{req.state eq 0 ? '' : 'd-none'}">
+                    </p:commandButton>
+                    <p:commandButton icon="pi pi-envelope" action="#{requestController.showSendMailForm(req)}"
+                      styleClass="rounded-button ui-button-info #{req.state eq 1 ? '' : 'd-none'}">
                     </p:commandButton>
                     <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this"
                       oncomplete="PF('deleteRequestDialog').show()">

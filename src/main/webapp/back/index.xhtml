@@ -1,41 +1,18 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="template/template.xhtml" 
-	xmlns:p="http://primefaces.org/ui"
-	 xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="template/template.xhtml" xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 	<ui:param name="page_name" value="Accueil" />
-	
+
 	<ui:define name="css">
 		<!-- Google Font: Source Sans Pro -->
-		<link rel="stylesheet"
-			href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" />
 		<!-- Font Awesome -->
-		<link rel="stylesheet"
-			href="/kidzone/back/plugins/fontawesome-free/css/all.min.css" />
+		<link rel="stylesheet" href="/kidzone/back/plugins/fontawesome-free/css/all.min.css" />
 		<!-- Ionicons -->
-		<link rel="stylesheet"
-			href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
-		<!-- Tempusdominus Bootstrap 4 -->
-		<link rel="stylesheet"
-			href="/kidzone/back/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
-		<!-- iCheck -->
-		<link rel="stylesheet"
-			href="/kidzone/back/plugins/icheck-bootstrap/icheck-bootstrap.min.css" />
-		<!-- JQVMap -->
-		<link rel="stylesheet" href="/kidzone/back/plugins/jqvmap/jqvmap.min.css" />
+		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
 		<!-- Theme style -->
 		<link rel="stylesheet" href="/kidzone/back/dist/css/adminlte.min.css" />
-		<!-- overlayScrollbars -->
-		<link rel="stylesheet"
-			href="/kidzone/back/plugins/overlayScrollbars/css/OverlayScrollbars.min.css" />
-		<!-- Daterange picker -->
-		<link rel="stylesheet"
-			href="/kidzone/back/plugins/daterangepicker/daterangepicker.css" />
-		<!-- summernote -->
-		<link rel="stylesheet"
-			href="/kidzone/back/plugins/summernote/summernote-bs4.min.css" />
 	</ui:define>
 
 	<ui:define name="content">
@@ -47,9 +24,9 @@
 				<div class="row">
 					<div class="col-lg-3 col-6">
 						<!-- small box -->
-						<div class="small-box bg-info">
+						<div class="small-box bg-warning">
 							<div class="inner">
-								<h3>150</h3>
+								<h3>#{userController.newRequests}</h3>
 
 								<p>New Requests</p>
 							</div>
@@ -57,23 +34,23 @@
 								<i class="ion ion-bag"></i>
 							</div>
 							<a href="/kidzone/back/pages/requests/index.jsf" class="small-box-footer">More info <i
-								class="fas fa-arrow-circle-right"></i></a>
+									class="fas fa-arrow-circle-right"></i></a>
 						</div>
 					</div>
 					<!-- col -->
 					<div class="col-lg-3 col-6">
 						<!-- small box -->
-						<div class="small-box bg-warning">
+						<div class="small-box bg-info">
 							<div class="inner">
-								<h3>44</h3>
+								<h3>#{userController.newUsers}</h3>
 
-								<p>User Registrations</p>
+								<p>New Users Registrations</p>
 							</div>
 							<div class="icon">
 								<i class="ion ion-person-add"></i>
 							</div>
 							<a href="/kidzone/back/pages/users/index.jsf" class="small-box-footer">More info <i
-								class="fas fa-arrow-circle-right"></i></a>
+									class="fas fa-arrow-circle-right"></i></a>
 						</div>
 					</div>
 					<!-- col -->
@@ -81,62 +58,159 @@
 						<!-- small box -->
 						<div class="small-box bg-danger">
 							<div class="inner">
-								<h3>65</h3>
+								<h3>#{userController.newVisitors}</h3>
 
-								<p>Unique Visitors</p>
+								<p>New Visitors</p>
 							</div>
 							<div class="icon">
 								<i class="ion ion-pie-graph"></i>
 							</div>
 							<a href="/kidzone/back/pages/users/index.jsf" class="small-box-footer">More info <i
-								class="fas fa-arrow-circle-right"></i></a>
+									class="fas fa-arrow-circle-right"></i></a>
+						</div>
+					</div>
+					<!-- col -->
+					<div class="col-lg-3 col-6">
+						<!-- small box -->
+						<div class="small-box bg-success">
+							<div class="inner">
+								<h3>#{userController.numberOfUsers}</h3>
+
+								<p>User Registrations</p>
+							</div>
+							<div class="icon">
+								<i class="ion ion-person-add"></i>
+							</div>
+							<a href="/kidzone/back/pages/users/index.jsf" class="small-box-footer">More info <i
+									class="fas fa-arrow-circle-right"></i></a>
 						</div>
 					</div>
 					<!-- col -->
 				</div>
 				<!-- /.row -->
-			</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<!-- Custom tabs (Charts with tabs)-->
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">
+									<i class="fas fa-chart-pie mr-1"></i>
+									Users Statistics
+								</h3>
+								<div class="card-tools">
+									<h:form>
+										<p:commandButton type="button" value="Export" icon="pi pi-home"
+											onclick="return downloadImage('user-stats');" />
+
+										<p:dialog widgetVar="dlg" showEffect="fade" modal="true"
+											header="Export Users Statistics as an Image" resizable="false">
+											<p:outputPanel id="output-user-stats" layout="block"
+												style="width:500px;height:300px" />
+										</p:dialog>
+									</h:form>
+								</div>
+							</div><!-- /.card-header -->
+							<div class="card-body">
+								<p:barChart model="#{userController.userStats}" style="width: 100%; height: 500px;"
+									widgetVar="user-stats" />
+							</div>
+						</div>
+						<!-- /.card -->
+					</div>
+				</div>
+
+				<!-- Main row -->
+				<div class="row">
+					<!-- Left col -->
+					<section class="col-lg-6 connectedSortable">
+						<!-- Custom tabs (Charts with tabs)-->
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">
+									<i class="fas fa-chart-pie mr-1"></i>
+									Requests Statistics
+								</h3>
+								<div class="card-tools">
+									<h:form>
+										<p:commandButton type="button" value="Export" icon="pi pi-home"
+											onclick="return downloadImage('request-stats');" />
+
+										<p:dialog widgetVar="dlg" showEffect="fade" modal="true"
+											header="Export Requests Statistics as an Image" resizable="false">
+											<p:outputPanel id="output-request-stats" layout="block"
+												style="width:500px;height:300px" />
+										</p:dialog>
+									</h:form>
+								</div>
+							</div><!-- /.card-header -->
+							<div class="card-body">
+								<p:donutChart model="#{userController.requestStats}" style="width: 100%; height: 500px;"
+									widgetVar="request-stats" />
+							</div>
+						</div>
+						<!-- /.card -->
+					</section>
+					<!-- /.Left col -->
+					<!-- right col (We are only adding the ID to make the widgets sortable)-->
+					<section class="col-lg-6 connectedSortable">
+					</section>
+					<!-- right col -->
+				</div>
+				<!-- /.row (main row) -->
+			</div><!-- /.container-fluid -->
 		</section>
+		<!-- /.content -->
 
 	</ui:define>
 
 	<ui:define name="js">
 
-		<!-- jQuery -->
-		<script src="/kidzone/back/plugins/jquery/jquery.min.js"></script>
-		<!-- jQuery UI 1.11.4 -->
-		<script src="/kidzone/back/plugins/jquery-ui/jquery-ui.min.js"></script>
+		<!-- jQuery 
+		<script src="/kidzone/back/plugins/jquery/jquery.min.js"></script>-->
+		<!-- jQuery UI 1.11.4 
+		<script src="/kidzone/back/plugins/jquery-ui/jquery-ui.min.js"></script>-->
 		<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-		<script>
-			$.widget.bridge('uibutton', $.ui.button)
-		</script>
 		<!-- Bootstrap 4 -->
 		<script src="/kidzone/back/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-		<!-- ChartJS -->
-		<script src="/kidzone/back/plugins/chart.js/Chart.min.js"></script>
-		<!-- Sparkline -->
-		<script src="/kidzone/back/plugins/sparklines/sparkline.js"></script>
-		<!-- JQVMap -->
-		<script src="/kidzone/back/plugins/jqvmap/jquery.vmap.min.js"></script>
-		<script src="/kidzone/back/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-		<!-- jQuery Knob Chart -->
-		<script src="/kidzone/back/plugins/jquery-knob/jquery.knob.min.js"></script>
-		<!-- daterangepicker -->
-		<script src="/kidzone/back/plugins/moment/moment.min.js"></script>
-		<script src="/kidzone/back/plugins/daterangepicker/daterangepicker.js"></script>
-		<!-- Tempusdominus Bootstrap 4 -->
-		<script
-			src="/kidzone/back/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-		<!-- Summernote -->
-		<script src="/kidzone/back/plugins/summernote/summernote-bs4.min.js"></script>
-		<!-- overlayScrollbars -->
-		<script
-			src="/kidzone/back/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 		<!-- AdminLTE App -->
 		<script src="/kidzone/back/dist/js/adminlte.js"></script>
-		<!-- AdminLTE for demo purposes -->
-		<script src="/kidzone/back/dist/js/demo.js"></script>
-		<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-		<script src="/kidzone/back/dist/js/pages/dashboard.js"></script>
+		<!-- AdminLTE for demo purposes 
+		<script src="/kidzone/back/dist/js/demo.js"></script>-->
+		<!-- AdminLTE dashboard demo (This is only for demo purposes) 
+		<script src="/kidzone/back/dist/js/pages/dashboard.js"></script>-->
+
+		<script type="text/javascript">
+			//<![CDATA[
+			function exportUserChart() {
+				//export image
+				$('#output-user-stats').empty().append(PF('user-stats').exportAsImage());
+
+				//show the dialog
+				PF('dlg').show();
+			}
+			//]]>
+			//<![CDATA[
+			function exportRequestChart() {
+				//export image
+				$('#output-request-stats').empty().append(PF('request-stats').exportAsImage());
+
+				//show the dialog
+				PF('dlg').show();
+			}
+			//]]>
+			function downloadImage(widgetVar) {
+				var image = PF(widgetVar).exportAsImage();
+				var imageSrc = $(image).attr('src');
+				var url = imageSrc.replace(/^data:image\/[^;]+/, 'data:application/octet-stream');
+				var link = document.createElement('a');
+				link.download = widgetVar+".png";
+				link.href = url;
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+				return false;
+			}
+		</script>
 	</ui:define>
 </ui:composition>

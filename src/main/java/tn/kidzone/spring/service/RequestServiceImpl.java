@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import tn.kidzone.spring.entity.Request;
+import tn.kidzone.spring.entity.Request.Subject;
 import tn.kidzone.spring.repository.RequestRepository;
 
 @Service
@@ -64,6 +65,21 @@ public class RequestServiceImpl implements IRequestService {
     message.setSubject(subject);
     message.setText(text);
     emailSender.send(message);
+  }
+
+  @Override
+  public int NumberOfRequests() {
+    return requestRepository.NumberOfRequests();
+  }
+
+  @Override
+  public int NumberOfRecentRequests() {
+    return requestRepository.NumberOfRecentRequests();
+  }
+
+  @Override
+  public int Numberof(Subject subject) {
+		return requestRepository.NumberOf(subject);
   }
 
 }

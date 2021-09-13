@@ -20,5 +20,20 @@ public interface UserRepository extends CrudRepository<User, Long>
 	User retrieveUsersByEmail(@Param("email") String email);
 	
 	@Query("SELECT u FROM User u WHERE u.email= :email and u.password = :password")
-	public User getUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+	User getUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+
+	@Query("select count(*) FROM User u")
+	int NumberOfUsers();
+
+	@Query("select count(*) FROM User u where role = 'VISITOR' and u.createdDate >= ADDDATE(DATE( NOW() ), -31)")
+	int NumberOfRecentVisitors();
+
+	@Query("select count(*) FROM User u where u.createdDate >= ADDDATE(DATE( NOW() ), -31)")
+	int NumberOfRecentUsers();
+
+	@Query("select count(*) FROM User u where role = 'VISITOR'")
+	int NumberOfVisitors();
+
+	@Query("select count(*) FROM User u where role = :role")
+	int NumberOf(@Param("role") Role role);
 }

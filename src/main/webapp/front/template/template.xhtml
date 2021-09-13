@@ -24,6 +24,8 @@
     <div id="fancy" class="fancy">
         <h2>Request information</h2>
         <h:form id="form">
+            <p:growl id="messages" showDetail="true"/>
+            
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <fieldset class="mail">
@@ -34,7 +36,6 @@
                                     pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"
                                     patternMessage="Email format is invalid" />
                             </p:inputText>
-                            <p:message for="email" />
                         </div>
                     </fieldset>
                     <fieldset class="name">

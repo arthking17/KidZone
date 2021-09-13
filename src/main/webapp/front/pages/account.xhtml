@@ -1,0 +1,102 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+    template="../template/template.xhtml" xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <ui:param name="page_name" value="Account" />
+
+    <ui:define name="css">
+        <link rel="stylesheet" media="all" href="/kidzone/front/css/style.css" />
+        <link rel="stylesheet" media="all" href="/kidzone/front/css/bootstrap.min.css" />
+        <style type="text/css">
+            button.ui-button {
+                margin-right: .5rem;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="divider"></div>
+
+        <div class="content">
+            <div class="container">
+                <h1 class="text-center">Account</h1>
+                <h:form>
+                    <div class="ui-fluid p-formgrid p-grid">
+                        <div class="p-field p-col">
+                            <fieldset class="mail">
+                                <p:message for="email" />
+                                <p:inputText id="email" value="#{frontController.authenticatedUser.email}"
+                                    placeholder="Email..." required="true" requiredMessage="Email Address is required">
+                                    <f:validateRegex
+                                        pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"
+                                        patternMessage="Email format is invalid" />
+                                </p:inputText>
+                            </fieldset>
+                            <fieldset class="name">
+                                <p:message for="firstName" />
+                                <p:inputText id="firstName" value="#{frontController.authenticatedUser.firstName}"
+                                    placeholder="First Name..." required="true"
+                                    requiredMessage="First Name is required" />
+                            </fieldset>
+                            <fieldset class="name">
+                                <p:message for="lastName" />
+                                <p:inputText id="lastName" value="#{frontController.authenticatedUser.lastName}"
+                                    placeholder="Last Name..." required="true"
+                                    requiredMessage="Last Name is required" />
+                            </fieldset>
+                        </div>
+                        <div class="p-field p-col">
+                            <fieldset class="name">
+                                <p:message for="role" />
+                                <h:selectOneMenu id="role" value="#{frontController.authenticatedUser.role}"
+                                    required="true" requiredMessage="Role is required">
+                                    <f:selectItem itemLabel="Choose your role" itemValue="#{null}" />
+                                    <f:selectItems value="#{frontController.roles}" />
+                                </h:selectOneMenu>
+                            </fieldset>
+                            <fieldset class="name">
+                                <p:message for="birthdate" />
+                                <p:datePicker id="birthdate" value="#{frontController.authenticatedUser.birthdayDate}"
+                                    required="true" requiredMessage="BirthDate is required" placeholder="Birthdate..."
+                                    monthNavigator="true" yearNavigator="true" showWeek="true" />
+                            </fieldset>
+                            <fieldset class="name">
+                                <p:message for="address" />
+                                <p:inputText id="address" value="#{frontController.authenticatedUser.address}"
+                                    placeholder="Address..." required="true" requiredMessage="Address is required" />
+                            </fieldset>
+                            <fieldset class="name">
+                                <p:password id="password" value="#{frontController.password}"
+                                    required="false" requiredMessage="Password is required" placeholder="Password...">
+                                    <f:validateRegex
+                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?.])[A-Za-z\d@$!%*?.]{8,}|()$"
+                                        patternMessage="Password format is invalid" />
+                                </p:password>
+                            </fieldset>
+                            <fieldset class="name">
+                                <p:message for="confirmPassword" />
+                                <p:password id="confirmPassword" value="#{frontController.confirmPassword}"
+                                    required="false" requiredMessage="Confirm Password is required"
+                                    placeholder="Confirm Password...">
+                                    <f:validateRegex
+                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?.])[A-Za-z\d@$!%*?.]{8,}|()$"
+                                        patternMessage="Confirm Password format is invalid" />
+                                </p:password>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="btn-holder">
+                        <h:commandButton class="btn btn-primary" value="Register" ajax="false"
+                            action="#{frontController.updateUser()}" validateClient="true" />
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+
+    <ui:define name="js">
+        <script src="/kidzone/front/js/plugins.js"></script>
+        <script src="/kidzone/front/js/main.js"></script>
+    </ui:define>
+</ui:composition>

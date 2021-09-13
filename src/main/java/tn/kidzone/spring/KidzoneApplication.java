@@ -1,7 +1,6 @@
 package tn.kidzone.spring;
 
 import java.util.EnumSet;
-import java.util.Properties;
 
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.DispatcherType;
@@ -14,9 +13,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.web.WebApplicationInitializer;
 
 import javax.servlet.FilterRegistration;
 import javax.servlet.MultipartConfigElement;
@@ -60,7 +56,15 @@ public class KidzoneApplication {
 	public FilterRegistrationBean loginFilter() {
 		FilterRegistrationBean registration = new FilterRegistrationBean();
 		registration.setFilter(new LoginFilter());
-		registration.addUrlPatterns("/pages/*");
+		registration.addUrlPatterns("/back/*");
+		return registration;
+	}
+
+	@Bean
+	public FilterRegistrationBean loginFilterFront() {
+		FilterRegistrationBean registration = new FilterRegistrationBean();
+		registration.setFilter(new LoginFilterFront());
+		registration.addUrlPatterns("/front/pages/account.jsf");
 		return registration;
 	}
 /*

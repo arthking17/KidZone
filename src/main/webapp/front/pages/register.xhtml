@@ -5,8 +5,8 @@
     <ui:param name="page_name" value="Register" />
 
     <ui:define name="css">
-        <link rel="stylesheet" media="all" href="../css/style.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" media="all" href="/kidzone/front/css/style.css" />
+        <link rel="stylesheet" media="all" href="/kidzone/front/css/bootstrap.min.css" />
         <style type="text/css">
             button.ui-button {
                 margin-right: .5rem;
@@ -45,17 +45,9 @@
                                     placeholder="Last Name..." required="true"
                                     requiredMessage="Last Name is required" />
                             </fieldset>
-                            <fieldset class="password">
-                                <p:password id="password" value="#{frontController.password}" required="true"
-                                    requiredMessage="Password is required" placeholder="Password...">
-                                    <f:validateRegex
-                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?.])[A-Za-z\d@$!%*?.]{8,}$"
-                                        patternMessage="Password format is invalid" />
-                                </p:password>
-                            </fieldset>
                         </div>
                         <div class="p-field p-col">
-                            <fieldset class="subject">
+                            <fieldset class="name">
                                 <p:message for="role" />
                                 <h:selectOneMenu id="role" value="#{frontController.role}" required="true"
                                     requiredMessage="Role is required">
@@ -74,7 +66,15 @@
                                 <p:inputText id="address" value="#{frontController.address}" placeholder="Address..."
                                     required="true" requiredMessage="Address is required" />
                             </fieldset>
-                            <fieldset class="confirmPassword">
+                            <fieldset class="name">
+                                <p:password id="password" value="#{frontController.password}" required="true"
+                                    requiredMessage="Password is required" placeholder="Password...">
+                                    <f:validateRegex
+                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?.])[A-Za-z\d@$!%*?.]{8,}$"
+                                        patternMessage="Password format is invalid" />
+                                </p:password>
+                            </fieldset>
+                            <fieldset class="name">
                                 <p:message for="confirmPassword" />
                                 <p:password id="confirmPassword" value="#{frontController.confirmPassword}"
                                     required="true" requiredMessage="Confirm Password is required"
@@ -96,7 +96,7 @@
     </ui:define>
 
     <ui:define name="js">
-        <script src="../js/plugins.js"></script>
-        <script src="../js/main.js"></script>
+        <script src="/kidzone/front/js/plugins.js"></script>
+        <script src="/kidzone/front/js/main.js"></script>
     </ui:define>
 </ui:composition>

@@ -1,0 +1,83 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+    template="../../template/template.xhtml" xmlns:p="http://primefaces.org/ui">
+    <ui:param name="page_name" value="Mail" />
+
+    <ui:define name="css">
+        <!-- Google Font: Source Sans Pro -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" />
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="/kidzone/back/plugins/fontawesome-free/css/all.min.css" />
+        <!-- Theme style -->
+        <link rel="stylesheet" href="/kidzone/back/dist/css/adminlte.min.css" />
+        <link rel="stylesheet" href="/kidzone/back/dist/css/pages/users/style.css" />
+    </ui:define>
+
+    <ui:define name="content">
+        <!-- Content Wrapper. Contains page content -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <h:form id="form-mail">
+                    <div class="card card-primary card-outline">
+
+                        <p:growl id="messages" showDetail="true" />
+
+                        <div class="card-header">
+                            <h3 class="card-title">Compose New Message</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="form-group">
+                                <p:inputText id="mailTo" value="#{requestController.mailTo}" class="form-control"
+                                    placeholder="To:" required="true"
+                                    requiredMessage="Receipt Email Address is required">
+                                    <f:validateRegex
+                                        pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"
+                                        patternMessage="Email format is invalid" />
+                                </p:inputText>
+                                <p:message for="mailTo" />
+                            </div>
+                            <div class="form-group">
+                                <p:inputText id="mailSubject" value="#{requestController.mailSubject}"
+                                    class="form-control" placeholder="Subject:" required="true"
+                                    requiredMessage="subject is required" />
+                                <p:message for="mailSubject" />
+                            </div>
+                            <div class="form-group">
+                                <p:inputTextarea id="mailContent" value="#{requestController.mailContent}"
+                                    class="form-control" required="true" requiredMessage="Content is required" rows="6"
+                                    cols="33" counter="display" maxlength="255"
+                                    counterTemplate="{0} characters remaining." />
+                                <h:outputText id="display" class="small" />
+                                <p:message for="mailContent" />
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                            <div class="float-right">
+                                <h:commandButton icon="pi pi-envelope" class="btn btn-primary" value="Send" ajax="false"
+                                    action="#{requestController.respondRequest()}" validateClient="true" />
+                            </div>
+                            <h:commandButton icon="pi pi-times" class="btn btn-default" value="Discard" ajax="true"
+                                action="#{requestController.resetFormMail()}" />
+                        </div>
+                        <!-- /.card-footer -->
+                    </div>
+                </h:form>
+            </div>
+        </section>
+    </ui:define>
+
+    <ui:define name="js">
+        <!-- jQuery 
+    <script src="/kidzone/back/plugins/jquery/jquery.min.js"></script>-->
+        <!-- Bootstrap 4 -->
+        <script src="/kidzone/back/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- AdminLTE App -->
+        <script src="/kidzone/back/dist/js/adminlte.min.js"></script>
+        <!-- AdminLTE for demo purposes 
+    <script src="/kidzone/back/dist/js/demo.js"></script>-->
+    </ui:define>
+</ui:composition>

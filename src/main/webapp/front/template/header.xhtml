@@ -14,17 +14,20 @@
 							<li><a href="events.html">Events</a></li>
 						</ul>
 						<ul>
-							<li class="#{frontController.login eq null ? '' : 'd-none'}"><a href="#login"
+							<li class="#{frontController.authenticatedUser eq null ? '' : 'd-none'}"><a href="#login"
 									class="login-form">Login</a>
 							</li>
-							<li class="#{frontController.login eq null ? 'd-none' : ''}"><div class="block"><a href="#">
-									<h:outputText value="#{frontController.login} " />
+							<li class="#{frontController.authenticatedUser eq null ? 'd-none' : ''}"><a
+									href="/kidzone/front/pages/account.jsf" title="account">
+									<h:outputText value="#{frontController.authenticatedUser.firstName} " />
 								</a>
+							</li>
+							<li class="#{frontController.authenticatedUser eq null ? 'd-none' : ''}">
 								<p:commandLink id="nonAjax" action="#{frontController.doLogout}" title="logout"
 									style="margin-right:20px;" ajax="false"><i class="pi pi-sign-out"></i>
-								</p:commandLink></div>
+								</p:commandLink>
 							</li>
-							<li class="#{frontController.login eq null ? '' : 'd-none'}"><a title="logout"
+							<li class="#{frontController.authenticatedUser eq null ? '' : 'd-none'}"><a title="logout"
 									href="/kidzone/front/pages/register.jsf" class="register-form">Register</a></li>
 							<li><a href="#fancy" class="get-contact">Contact</a></li>
 						</ul>

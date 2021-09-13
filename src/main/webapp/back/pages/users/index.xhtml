@@ -7,10 +7,10 @@
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" />
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css" />
+    <link rel="stylesheet" href="/kidzone/back/plugins/fontawesome-free/css/all.min.css" />
     <!-- Theme style -->
-    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
-    <link rel="stylesheet" href="../../dist/css/pages/users/style.css" />
+    <link rel="stylesheet" href="/kidzone/back/dist/css/adminlte.min.css" />
+    <link rel="stylesheet" href="/kidzone/back/dist/css/pages/users/style.css" />
   </ui:define>
 
   <ui:define name="content">
@@ -27,7 +27,7 @@
 
             <h:form id="form">
               <div class="card">
-                <p:growl id="msgs" showDetail="true" skipDetailIfEqualsSummary="true" />
+                <p:growl id="messages" showDetail="true"/>
 
                 <p:toolbar>
                   <p:toolbarGroup>
@@ -41,12 +41,6 @@
                         icon="pi pi-exclamation-triangle" />
                     </p:commandButton>
                   </p:toolbarGroup>
-                  <p:toolbarGroup align="right">
-                    <p:fileUpload mode="simple" skinSimple="true" label="Import" chooseIcon="pi pi-download" />
-                    <p:commandButton value="Export" icon="pi pi-upload" styleClass="ui-button-help" ajax="false">
-                      <p:dataExporter type="pdf" target="dt-users" fileName="users" />
-                    </p:commandButton>
-                  </p:toolbarGroup>
                 </p:toolbar>
 
                 <p:dataTable id="users" var="user" value="#{userController.users}" reflow="true"
@@ -56,14 +50,14 @@
                   rowSelectMode="add">
                   <f:facet name="header">
                     <div class="row mb-2">
-                      <div class="col-sm-10">
+                      <div class="col-sm-9">
                         <h3 class="card-title">List of Users</h3>
                         <br />
                         <small class="text-muted">All users are displayed here.</small>
                       </div>
-                      <div class="col-sm-2">
-                        <!--<p:inputText id="globalFilter" onkeyup="PF('usersTable').filter()" style="width:10rem"
-                        placeholder="Enter keyword" />-->
+                      <div class="col-sm-3">
+                        <p:inputText id="globalFilter" onkeyup="PF('usersTable').filter()" style="width:10rem"
+                          placeholder="Enter keyword" />
                         <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify" />
                         <p:columnToggler datasource="users" trigger="toggler" />
                       </div>
@@ -103,19 +97,28 @@
                     <h:outputText value="#{user.address}" />
                   </p:column>
 
-                  <p:column field="birthdayDate" sortBy="#{user.birthdayDate}" headerText="Birthdate"
-                    filterMatchMode="range">
+                  <p:column field="birthdayDate" headerText="Birthdate" filterMatchMode="range">
                     <f:facet name="filter">
                       <p:datePicker selectionMode="range" onchange="PF('usersTable').filter()" />
                     </f:facet>
                   </p:column>
 
-                  <p:column sortBy="#{user.role}" headerText="Role" filterBy="#{user.role}">
-                    <h:outputText value="#{user.role}"
-                      class="#{user.role eq 'ADMIN' ? 'admin' : user.role eq 'PARENT' ? 'user' : user.role eq 'STUDENT' ? 'user' : user.role eq 'VISITOR' ? 'visitor' : 'staff'}" />
+                  <p:column field="role" headerText="Role" filterMatchMode="exact">
+                    <f:facet name="filter">
+                      <p:selectOneMenu onchange="PF('usersTable').filter()" styleClass="custom-filter">
+                        <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
+                        <f:selectItems value="#{userController.roles}" />
+                      </p:selectOneMenu>
+                    </f:facet>
+
+                    <span
+                      class="#{user.role eq 'ADMIN' ? 'admin' : user.role eq 'PARENT' ? 'user' : user.role eq 'STUDENT' ? 'user' : user.role eq 'VISITOR' ? 'visitor' : 'staff'}">#{user.role}</span>
                   </p:column>
-                  <p:column sortBy="#{user.createdDate}" headerText="Creation Date" filterBy="#{user.createdDate}">
-                    <h:outputText value="#{user.createdDate}" />
+
+                  <p:column field="createdDate" headerText="Created Date" filterMatchMode="range">
+                    <f:facet name="filter">
+                      <p:datePicker selectionMode="range" onchange="PF('usersTable').filter()" />
+                    </f:facet>
                   </p:column>
 
                   <p:column exportable="false">
@@ -128,42 +131,6 @@
                     </p:commandButton>
                   </p:column>
                 </p:dataTable>
-
-                <p:dialog header="User Info" widgetVar="userDialog" modal="true" showEffect="fade" hideEffect="fade"
-                  resizable="false" responsive="true">
-                  <p:outputPanel id="userDetail" class="ui-fluid">
-                    <p:outputPanel rendered="#{not empty userController.selectedUser}">
-                      <img src="../../../images/users/#{selectedUser.profil}" class="direct-chat-img"
-                        alt="user-image"></img>
-                      <div class="p-field">
-                        <p:outputLabel for="firstName">First Name</p:outputLabel>
-                        <p:outputLabel id="firstName" value="#{userController.selectedUser.firstName}" />
-                      </div>
-                      <div class="p-field">
-                        <p:outputLabel for="lastName">Last Name</p:outputLabel>
-                        <p:outputLabel id="lastName" value="#{userController.selectedUser.lastName}" />
-                      </div>
-                      <div class="p-field">
-                        <p:outputLabel for="email">Email</p:outputLabel>
-                        <p:outputLabel id="email" value="#{userController.selectedUser.email}" />
-                      </div>
-                      <div class="p-field">
-                        <p:outputLabel for="birthDate">Birthdate</p:outputLabel>
-                        <p:outputLabel id="birthDate" value="#{userController.selectedUser.birthDate}" />
-                      </div>
-                      <div class="p-field">
-                        <p:outputLabel for="creationDate">Creation Date</p:outputLabel>
-                        <p:outputLabel id="creationDate" value="#{userController.selectedUser.creationDate}" />
-                      </div>
-                      <div class="p-field">
-                        <p:outputLabel for="role">Role</p:outputLabel>
-                        <p:outputLabel
-                          class="#{user.role eq 'ADMIN' ? 'admin' : user.role eq 'PARENT' ? 'user' : user.role eq 'STUDENT' ? 'user' : user.role eq 'VISITOR' ? 'visitor' : 'staff'}"
-                          id="role" value="#{userController.selectedUser.role}" />
-                      </div>
-                    </p:outputPanel>
-                  </p:outputPanel>
-                </p:dialog>
 
                 <p:confirmDialog widgetVar="deleteUserDialog" showEffect="fade" width="300" message="Delete the user?"
                   header="Confirm" severity="warn">
