@@ -11,7 +11,7 @@ access all of the information for the children and the center is available and e
 
 # 
 
-- [ ] build a docker image for services and applications used
+- [ ] Containerize the app with Docker using a dockerfile
 
 # 
 
