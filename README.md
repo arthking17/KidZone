@@ -11,7 +11,7 @@ access all of the information for the children and the center is available and e
 
 # 
 
-- [ ] Containerize the app with Docker using a dockerfile
+- [ ] build a docker image of project war file using a dockerfile
 
 # 
 
