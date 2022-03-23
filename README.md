@@ -9,8 +9,10 @@ access all of the information for the children and the center is available and e
 
 - build a Spring boot application with MySql DB
 
+# 
 
 - build a docker image for services and applications used
 
+# 
 
 - automate build and manage container using kubernetes
